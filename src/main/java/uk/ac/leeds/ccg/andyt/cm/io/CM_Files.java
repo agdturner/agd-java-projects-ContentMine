@@ -16,6 +16,7 @@
 package uk.ac.leeds.ccg.andyt.cm.io;
 
 import java.io.File;
+import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.generic.io.Generic_Files;
 
 /**
@@ -26,14 +27,10 @@ public class CM_Files extends Generic_Files {
     
     public File dir;
     
-    public CM_Files(){
-        super();
-    }
-
     /**
      * @param dataDir
      */
-    public CM_Files(File dataDir) {
+    public CM_Files(File dataDir) throws IOException {
         super(dataDir);
     }
     

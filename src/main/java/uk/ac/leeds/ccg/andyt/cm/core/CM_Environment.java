@@ -15,6 +15,7 @@
  */
 package uk.ac.leeds.ccg.andyt.cm.core;
 
+import java.io.IOException;
 import uk.ac.leeds.ccg.andyt.generic.core.Generic_Environment;
 import uk.ac.leeds.ccg.andyt.cm.io.CM_Files;
 
@@ -27,9 +28,9 @@ public class CM_Environment {
     public transient CM_Files files;
     public transient Generic_Environment ge;
     
-    public CM_Environment(Generic_Environment ge) {
+    public CM_Environment(Generic_Environment ge) throws IOException {
         this.ge = ge;
-        files = new CM_Files();
+        files = new CM_Files(ge.files.getDir());
     }
     
 }

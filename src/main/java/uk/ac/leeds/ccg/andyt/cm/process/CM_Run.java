@@ -16,17 +16,8 @@
 package uk.ac.leeds.ccg.andyt.cm.process;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import uk.ac.leeds.ccg.andyt.cm.core.CM_Environment;
 import uk.ac.leeds.ccg.andyt.cm.core.CM_Object;
 import uk.ac.leeds.ccg.andyt.cm.tools.CM_ParsePDF;
@@ -43,24 +34,31 @@ public class CM_Run extends CM_Object implements Runnable {
     }
 
     public static void main(String[] args) {
-        new CM_Run(new CM_Environment(new Generic_Environment())).run();
+        try {
+            CM_Run p = new CM_Run(new CM_Environment(new Generic_Environment()));
+            p.run();
+        } catch (Exception ex) {
+            ex.printStackTrace(System.err);
+        }
     }
 
     @Override
     public void run() {
-        String year = "2018-2019";
-        String s_OnTime = "OnTime";
-        String s_Late = "Late";
-        String type = s_Late;
-        File dir = new File(env.files.getInputDataDir(), year);
-        dir = new File(dir, "turnitinuk_original_bulk_download" + type);
-        File dirOut = env.files.getOutputDataDir();
-        int startPage = 0;
-        int endPage = 4;
-        int numberOfParagraphs = 100;
-        env.ge.log(dir.toString());
-        File[] fs = dir.listFiles();
-        try (PrintWriter pw = env.ge.io.getPrintWriter(new File(dirOut, year + type + ".txt"), false)) {
+        PrintWriter pw = null;
+        try {
+            String year = "2018-2019";
+            String s_OnTime = "OnTime";
+            String s_Late = "Late";
+            String type = s_Late;
+            File dir = new File(env.files.getInputDir(), year);
+            dir = new File(dir, "turnitinuk_original_bulk_download" + type);
+            File dirOut = env.files.getOutputDir();
+            int startPage = 0;
+            int endPage = 4;
+            int numberOfParagraphs = 100;
+            env.ge.log(dir.toString());
+            File[] fs = dir.listFiles();
+            pw = env.ge.io.getPrintWriter(new File(dirOut, year + type + ".txt"), false);
             for (File f : fs) {
                 pw.write("<" + f.toString() + ">");
                 String s = "";
@@ -77,6 +75,11 @@ public class CM_Run extends CM_Object implements Runnable {
                 pw.write(s);
                 pw.write("</" + f.toString() + ">");
             }
+        } catch (IOException ex) {
+            ex.printStackTrace(System.err);
+            env.ge.log(ex.getMessage());
+        } finally {
+            pw.close();
         }
 
     }
